@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   iterator.hpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olakhdar <olakhdar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/03 10:49:03 by olakhdar          #+#    #+#             */
+/*   Updated: 2023/02/03 10:49:04 by olakhdar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef ITERATOR_HPP
 #define ITERATOR_HPP
 
@@ -20,16 +32,15 @@ namespace ft
 
             reference   operator*() const { return *m_ptr; }
             pointer     operator->() const { return m_ptr; }
-            iterator&   operator++() { ++(*m_ptr); return *this; }
+            iterator&   operator++() { ++m_ptr; return *this; }
             iterator    operator++(int) { iterator tmp = *this; ++(*this); return tmp; }
-            iterator&   operator--() { --(*m_ptr); return *this; }
+            iterator&   operator--() { --m_ptr; return *this; }
             iterator    operator--(int) { iterator tmp = *this; --(*this); return tmp; }
             iterator    operator+(difference_type a) const { iterator tmp = *this; tmp += a; return tmp; }
             iterator&   operator+=(difference_type a) { m_ptr += a; return *this; }
             iterator    operator-(difference_type a) const { return *this + (-a); }
             iterator&   operator-=(difference_type a) { *this += -a; return *this;}
             reference   operator[](difference_type a) const { return m_ptr[a]; }
-
 
             friend bool operator==(const iterator &a, const iterator &b) { return a.base() == b.base(); }
             friend bool operator!=(const iterator &a, const iterator &b) { return !(a == b); }
@@ -39,7 +50,7 @@ namespace ft
             friend bool operator<=(const iterator &a, const iterator &b) { return !(b < a); }
 
         private:
-            iterator_type *m_ptr;
+            iterator_type m_ptr;
 
     };
 }
