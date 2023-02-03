@@ -40,7 +40,8 @@ namespace ft
 
             allocator_type _alloc;
             pointer _data;
-            int capacity;
+        int capacity;
+        int size;
 
         explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc) {}
 
@@ -54,6 +55,7 @@ namespace ft
 //                std::cout <<  _data[i] << std::endl; ////////
             }
             capacity = n;
+            size = n;
         }
         reference operator[] (size_type n) { return _data[n]; }
         const_reference operator[] (size_type n) const { return _data[n]; }
@@ -69,11 +71,15 @@ namespace ft
                 throw std::out_of_range("vector");
             return _data[n];
         }
-
-        void assign(size_type count, const value_type& value)
-        {
-
+        reference front() { return _data[0]; }
+        const_reference front() const { return _data[0]; }
+        bool empty() const{
+            if (size == 0)
+                return true;
+            return false;
         }
+
+        void assign(size_type count, const value_type& value){}
 
     };
 
