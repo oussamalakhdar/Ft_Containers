@@ -18,6 +18,7 @@
 #include <assert.h>
 #include <stdexcept>
 #include "iterator.hpp"
+#include <cmath>
 
 namespace ft
 {
@@ -40,46 +41,59 @@ namespace ft
 
             allocator_type _alloc;
             pointer _data;
-        int capacity;
-        int size;
+        size_type v_capacity;
+        size_type v_size;
 
-        explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc) {}
+        explicit vector (const allocator_type& alloc = allocator_type()) \
+                          : _alloc(alloc), v_capacity(0), v_size(0) {}
 
         explicit vector (size_type n, const value_type& val = value_type(),\
                             const allocator_type& alloc = allocator_type()) : _alloc(alloc)
         {
             _data = _alloc.allocate(sizeof (T) * n);
             for (int i = 0; i < n; ++i)
-            {
                 _data[i] = val;
-//                std::cout <<  _data[i] << std::endl; ////////
-            }
-            capacity = n;
-            size = n;
+            v_capacity = n;
+            v_size = n;
         }
+
         reference operator[] (size_type n) { return _data[n]; }
         const_reference operator[] (size_type n) const { return _data[n]; }
+
         reference at (size_type n)
         {
-            if (n >= capacity)
+            if (n >= v_capacity)
                 throw std::out_of_range("vector");
             return _data[n];
         }
         const_reference at (size_type n) const
         {
-            if (n >= capacity)
+            if (n >= v_capacity)
                 throw std::out_of_range("vector");
             return _data[n];
         }
+
         reference front() { return _data[0]; }
         const_reference front() const { return _data[0]; }
+
         bool empty() const{
-            if (size == 0)
+            if (v_size == 0)
                 return true;
             return false;
         }
 
-        void assign(size_type count, const value_type& value){}
+        size_type capacity() const { return v_capacity;}
+
+        size_type size() const {return v_size;}
+
+        size_type max_size() const{ return static_cast<T>(std::pow(2, sizeof(T) * 8)) / sizeof(T);}
+
+        void push_back (const value_type& val)
+        {
+
+        }
+
+        void assign(size_type count, const value_type& value) {}
 
     };
 

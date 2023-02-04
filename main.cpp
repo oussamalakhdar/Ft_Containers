@@ -14,18 +14,20 @@
 #include <vector>
 #include "./vector/vector.hpp"
 
+
 int main()
 {
-    ft::vector<int> t(2, 6);
-    std::vector <int> a(2,1);
+    ft::vector<int> t(0, 6);
+    std::vector <int> a(15,1);
 //    std::vector<int>::iterator b = a.begin();
 //    for (auto i = b; i < a.end(); ++i)
 //        std::cout << *i << std::endl;
 ////    std::cout << t[4] << std::endl;
-    const int &i = t.at(1);
+//    const int &i = t.at(1);
 //    int &i = a.at(6);
 
-    std::cout << i << std::endl;
+    std::cout << t.max_size() << std::endl;
+    std::cout << a.max_size() << std::endl;
 
 //    a.push_back(1);
 //    a.push_back(2);
