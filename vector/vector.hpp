@@ -109,27 +109,41 @@ namespace ft
         {
             if (n > v_capacity)
             {
-                pointer tmp;
-                tmp =  _alloc.allocate(sizeof (T) * v_capacity);
-                for (int i = 0; i < v_capacity; ++i)
-                    tmp[i] = _data[i];
-                _alloc.deallocate(_data, v_capacity);
-                _data = _alloc.allocate(sizeof (T) * n);
-                for (int i = 0; i < v_capacity; ++i)
-                    _data[i] = tmp[i];
-                _alloc.deallocate(tmp, v_capacity);
+                if (!empty())
+                {
+                    pointer tmp;
+                    tmp = _alloc.allocate(sizeof(T) * v_capacity);
+                    for (int i = 0; i < v_capacity; ++i)
+                        _alloc.construct(tmp + i, _data[i]);
+
+                    for (int i = 0; i < v_capacity; ++i)
+                        _alloc.destroy(_data + i);
+                    _alloc.deallocate(_data, v_capacity);
+
+                    _data = _alloc.allocate(sizeof(T) * n);
+                    for (int i = 0; i < v_capacity; ++i)
+                        _alloc.construct(_data + i, tmp[i]);
+
+                    for (int i = 0; i < v_capacity; ++i)
+                        _alloc.destroy(tmp + i);
+                    _alloc.deallocate(tmp, v_capacity);
+                }
+                else
+                    _data = _alloc.allocate(sizeof(T) * n);
                 v_capacity = n;
             }
         }
 
         void push_back (const value_type& val)
         {
-            if (v_size == v_capacity)
-                reserve(v_capacity * 2 );
-            _data[v_size++] = val;
+            if (empty())
+                reserve(1);
+            else if (v_size == v_capacity)
+                reserve(v_capacity * 2);
+            _alloc.construct(_data + v_size++,  val);
         }
 
-        void assign(size_type count, const value_type& value) {}
+        void assign(size_type count, const value_type& value) { }
 
     };
 
