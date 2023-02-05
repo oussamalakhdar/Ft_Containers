@@ -15,11 +15,12 @@
 #include "./vector/vector.hpp"
 
 
+
 int main()
 {
 
-    ft::vector<int> t(20);
-    std::vector <int> a(20);
+    ft::vector<int> t;
+    std::vector <int> a;
     std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
     std::cout << "capa : " << a.capacity() << " and size " << a.size() << std::endl;
     t.push_back(6);
@@ -42,4 +43,12 @@ int main()
 //    std::vector <int>::iterator b = a.begin();
 //    std::cout << *b[2] << std::endl;
 //    system("leaks a.out");
+
+//    std::vector <int> a;
+//    a.push_back(1);
+//    a.push_back(1);
+//    a.push_back(1);
+//    std::cout << a.capacity() << std::endl;
+//    std::cout << a.size() << std::endl;
+
 }
