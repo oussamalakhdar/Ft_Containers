@@ -41,22 +41,22 @@ namespace ft
 
             allocator_type _alloc;
             pointer _data;
-        size_type v_capacity;
-        size_type v_size;
+            size_type v_capacity;
+            size_type v_size;
 
         explicit vector (const allocator_type& alloc = allocator_type()) \
-                          : _alloc(alloc), v_capacity(0), v_size(0) {}
+                          : _alloc(alloc), v_capacity(0), v_size(0), _data(nullptr) {}
 
         explicit vector (size_type n, const value_type& val = value_type(),\
                             const allocator_type& alloc = allocator_type()) : _alloc(alloc)
         {
+
             _data = _alloc.allocate(sizeof (T) * n);
             for (int i = 0; i < n; ++i)
                 _data[i] = val;
             v_capacity = n;
             v_size = n;
         }
-
         reference operator[] (size_type n) { return _data[n]; }
         const_reference operator[] (size_type n) const { return _data[n]; }
 
@@ -76,7 +76,10 @@ namespace ft
         reference front() { return _data[0]; }
         const_reference front() const { return _data[0]; }
 
-        bool empty() const{
+        reference back() { return _data[v_size - 1]; }
+        const_reference back() const { return _data[v_size - 1]; }
+
+        bool empty() const {
             if (v_size == 0)
                 return true;
             return false;
@@ -86,11 +89,44 @@ namespace ft
 
         size_type size() const {return v_size;}
 
-        size_type max_size() const{ return static_cast<T>(std::pow(2, sizeof(T) * 8)) / sizeof(T);}
+//        size_type max_size() const {
+//            return static_cast<T>(std::pow(2, sizeof(T) * 8)) / sizeof(T);
+//        }
+        size_type max_size() const
+        {
+            return _alloc.max_size();
+        }
+
+//        void swap (vector& x)
+//        {
+//            pointer tmp;
+//            tmp =  _alloc.allocate(sizeof (T) * x.capacity());
+//            for (int i = 0; i < x.v_capacity; ++i)
+//                x._data[i] = tmp[i];
+//        }
+
+        void reserve (size_type n)
+        {
+            if (n > v_capacity)
+            {
+                pointer tmp;
+                tmp =  _alloc.allocate(sizeof (T) * v_capacity);
+                for (int i = 0; i < v_capacity; ++i)
+                    tmp[i] = _data[i];
+                _alloc.deallocate(_data, v_capacity);
+                _data = _alloc.allocate(sizeof (T) * n);
+                for (int i = 0; i < v_capacity; ++i)
+                    _data[i] = tmp[i];
+                _alloc.deallocate(tmp, v_capacity);
+                v_capacity = n;
+            }
+        }
 
         void push_back (const value_type& val)
         {
-
+            if (v_size == v_capacity)
+                reserve(v_capacity * 2 );
+            _data[v_size++] = val;
         }
 
         void assign(size_type count, const value_type& value) {}
