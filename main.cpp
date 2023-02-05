@@ -17,8 +17,17 @@
 
 int main()
 {
-    ft::vector<int> t(0, 6);
-    std::vector <int> a(15,1);
+
+    ft::vector<int> t(20);
+    std::vector <int> a(20);
+    std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
+    std::cout << "capa : " << a.capacity() << " and size " << a.size() << std::endl;
+    t.push_back(6);
+    a.push_back(6);
+//    t.reserve(15);
+//    a.reserve(15);
+    std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
+    std::cout << "capa : " << a.capacity() << " and size " << a.size() << std::endl;
 //    std::vector<int>::iterator b = a.begin();
 //    for (auto i = b; i < a.end(); ++i)
 //        std::cout << *i << std::endl;
@@ -26,17 +35,11 @@ int main()
 //    const int &i = t.at(1);
 //    int &i = a.at(6);
 
-    std::cout << t.max_size() << std::endl;
-    std::cout << a.max_size() << std::endl;
+//    std::cout << t.reserve(15) << std::endl;
+//    std::cout << a.reserve(15) << std::endl;
 
-//    a.push_back(1);
-//    a.push_back(2);
-//    a.push_back(3);
-//    a.push_back(4);
-//    a.push_back(5);
-//    a.push_back(6);
-//    a.push_back(7);
-//    a.push_back(8);
+
 //    std::vector <int>::iterator b = a.begin();
 //    std::cout << *b[2] << std::endl;
+//    system("leaks a.out");
 }
