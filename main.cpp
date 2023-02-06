@@ -13,22 +13,31 @@
 #include <iostream>
 #include <vector>
 #include "./vector/vector.hpp"
-
+#include "./vector/is_integral.hpp"
 
 
 int main()
 {
+    bool b = ft::is_integral<char>::value;
+    std::cout << b <<std::endl;
 
-    ft::vector<int> t;
-    std::vector <int> a;
-    std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
-    std::cout << "capa : " << a.capacity() << " and size " << a.size() << std::endl;
-    t.push_back(6);
-    a.push_back(6);
-//    t.reserve(15);
-//    a.reserve(15);
-    std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
-    std::cout << "capa : " << a.capacity() << " and size " << a.size() << std::endl;
+//    ft::vector<int> t;
+//    std::vector <int> a;
+//    std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
+//    std::cout << "*capa : " << a.capacity() << " and size " << a.size() << std::endl <<  std::endl;
+//    t.push_back(6);
+//    a.push_back(6);
+////    t.reserve(15);
+////    a.reserve(15);
+//    std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
+//    std::cout << "*capa : " << a.capacity() << " and size " << a.size() << std::endl;
+//    std::cout << "ola : " << a[0] <<  std::endl <<  std::endl;
+//    t.pop_back();
+//    a.pop_back();
+//    std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
+//    std::cout << "*capa : " << a.capacity() << " and size " << a.size() << std::endl;
+//    std::cout << "ola : " << t[0] <<  std::endl;
+
 //    std::vector<int>::iterator b = a.begin();
 //    for (auto i = b; i < a.end(); ++i)
 //        std::cout << *i << std::endl;
@@ -36,19 +45,5 @@ int main()
 //    const int &i = t.at(1);
 //    int &i = a.at(6);
 
-//    std::cout << t.reserve(15) << std::endl;
-//    std::cout << a.reserve(15) << std::endl;
-
-
-//    std::vector <int>::iterator b = a.begin();
-//    std::cout << *b[2] << std::endl;
-//    system("leaks a.out");
-
-//    std::vector <int> a;
-//    a.push_back(1);
-//    a.push_back(1);
-//    a.push_back(1);
-//    std::cout << a.capacity() << std::endl;
-//    std::cout << a.size() << std::endl;
 
 }
