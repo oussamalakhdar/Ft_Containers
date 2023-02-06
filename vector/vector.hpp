@@ -97,6 +97,8 @@ namespace ft
             return _alloc.max_size();
         }
 
+        allocator_type get_allocator() const { return _alloc; }
+
 //        void swap (vector& x)
 //        {
 //            pointer tmp;
@@ -141,6 +143,11 @@ namespace ft
             else if (v_size == v_capacity)
                 reserve(v_capacity * 2);
             _alloc.construct(_data + v_size++,  val);
+        }
+        void pop_back ()
+        {
+            if (v_size >=1 )
+                _alloc.destroy(_data + --v_size);
         }
 
         void assign(size_type count, const value_type& value) { }
