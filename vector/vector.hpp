@@ -87,7 +87,7 @@ namespace ft
 
         size_type capacity() const { return v_capacity;}
 
-        size_type size() const {return v_size;}
+        size_type size() const { return v_size; }
 
 //        size_type max_size() const {
 //            return static_cast<T>(std::pow(2, sizeof(T) * 8)) / sizeof(T);
@@ -99,13 +99,39 @@ namespace ft
 
         allocator_type get_allocator() const { return _alloc; }
 
-//        void swap (vector& x)
-//        {
-//            pointer tmp;
-//            tmp =  _alloc.allocate(sizeof (T) * x.capacity());
-//            for (int i = 0; i < x.v_capacity; ++i)
-//                x._data[i] = tmp[i];
-//        }
+        void swap (vector& x)
+        {
+            pointer tmp;
+            size_t  c ;
+            size_t  s;
+
+            tmp =  _alloc.allocate(sizeof (T) * v_size);
+            for (int i = 0; i < v_size; ++i)
+               _alloc.construct(tmp + i, _data[i]);
+            for (int i = 0; i < v_capacity; ++i)
+                _alloc.destroy(_data + i);
+            _alloc.deallocate(_data, v_capacity);
+            c = v_capacity;
+            s = v_size;
+
+            _data = _alloc.allocate(sizeof(T) * x.v_capacity);
+            for (int i = 0; i < x.v_size; ++i)
+                _alloc.construct(_data + i, x._data[i]);
+            for (int i = 0; i < x.v_capacity ; ++i)
+                _alloc.destroy(x._data + i);
+            _alloc.deallocate(x._data, x.v_capacity);
+            v_capacity = x.v_capacity;
+            v_size = x.v_size;
+
+            x._data = _alloc.allocate(sizeof(T) * c);
+            for (int i = 0; i < s; ++i)
+                _alloc.construct(x._data + i, tmp[i]);
+            for (int i = 0; i < s ; ++i)
+                _alloc.destroy(tmp + i);
+            _alloc.deallocate(tmp, s);
+            x.v_capacity = c;
+            x.v_size = s;
+        }
 
         void reserve (size_type n)
         {
@@ -148,6 +174,15 @@ namespace ft
         {
             if (v_size >=1 )
                 _alloc.destroy(_data + --v_size);
+        }
+        void clear()
+        {
+            if (!empty())
+            {
+                for (int i = 0; i < v_size; ++i)
+                    _alloc.destroy(_data + i);
+                v_size = 0;
+            }
         }
 
         void assign(size_type count, const value_type& value) { }

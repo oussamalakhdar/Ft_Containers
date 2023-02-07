@@ -22,7 +22,7 @@ namespace ft
     {
         public:
             typedef T                               iterator_type;
-            typedef T                               *pointer;
+            typedef T*                               pointer;
             typedef T&                              reference;
             typedef std::ptrdiff_t                  difference_type; //// need ask for it
             typedef std::random_access_iterator_tag iterator_category; //// need ask
@@ -51,7 +51,6 @@ namespace ft
 
         private:
             iterator_type m_ptr;
-
     };
 }
 #endif
