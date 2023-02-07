@@ -18,11 +18,29 @@
 
 int main()
 {
-    bool b = ft::is_integral<char>::value;
-    std::cout << b <<std::endl;
+    ft::vector<int> foo (1);   // three ints with a value of 100
+    ft::vector<int> bar (1);   // five ints with a value of 200
+    std::cout << foo.capacity() <<  ' ' << foo.size() << std::endl;
+    std::cout << bar.capacity() <<  ' ' << bar.size() << std::endl;
+    std::cout << '\n';
+    foo.swap(bar);
+    std::cout << foo.capacity() <<  ' ' << foo.size() << std::endl;
+    std::cout << bar.capacity() <<  ' ' << bar.size() << std::endl;
+    std::cout << "foo contains:";
+    for (unsigned i=0; i<foo.size(); i++)
+        std::cout << ' ' << foo[i];
+    std::cout << '\n';
 
+    std::cout << "bar contains:";
+    for (unsigned i=0; i<bar.size(); i++)
+        std::cout << ' ' << bar[i];
+    std::cout << '\n';
+
+//    system("leaks a.out");
+    return 0;
 //    ft::vector<int> t;
 //    std::vector <int> a;
+
 //    std::cout << "capa : " << t.capacity() << " and size " << t.size() << std::endl;
 //    std::cout << "*capa : " << a.capacity() << " and size " << a.size() << std::endl <<  std::endl;
 //    t.push_back(6);
@@ -44,6 +62,5 @@ int main()
 ////    std::cout << t[4] << std::endl;
 //    const int &i = t.at(1);
 //    int &i = a.at(6);
-
 
 }
