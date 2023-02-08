@@ -18,19 +18,16 @@
 
 int main()
 {
-    std::vector<int> myvector;
-
-    // set some initial content:
-    for (int i=1;i<10;i++) myvector.push_back(i);
-
-    myvector.resize(5);
-    myvector.resize(8,100);
-    myvector.resize(12);
+    ft::vector<int> myvector;
+    for (int i=1; i<=5; i++) myvector.push_back(i);
 
     std::cout << "myvector contains:";
-    for (int i=0;i<myvector.size();i++)
-        std::cout << ' ' << myvector[i];
+    for (ft::vector<int>::iterator it = myvector.begin() ; it != myvector.end(); ++it)
+        std::cout << ' ' << *it;
     std::cout << '\n';
+
+    return 0;
+
 
 //    ft::vector<int> foo (10, 6) ;   // three ints with a value of 100
 //    std::vector<int> bar (10, 6);   // five ints with a value of 200
@@ -51,7 +48,7 @@ int main()
 //        std::cout << ' ' << bar[i];
 //    std::cout << '\n';
 
-    system("leaks a.out");
+//    system("leaks a.out");
     return 0;
 //    ft::vector<int> t;
 //    std::vector <int> a;

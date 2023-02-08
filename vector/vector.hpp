@@ -203,6 +203,27 @@ namespace ft
             }
         }
 
+        iterator begin()
+        {
+            iterator a(_data);
+            return a;
+        }
+        const_iterator begin() const
+        {
+            const_iterator a(_data);
+            return a;
+        }
+
+        iterator end()
+        {
+            iterator a(_data + v_size);
+            return a;
+        }
+        const_iterator end() const
+        {
+            const_iterator a(_data + v_size);
+            return a;
+        }
 
         void assign(size_type count, const value_type& value) { }
 
