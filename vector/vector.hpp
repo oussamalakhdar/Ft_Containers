@@ -185,6 +185,25 @@ namespace ft
             }
         }
 
+        void resize (size_type n, value_type val = value_type())
+        {
+            if (n < v_size)
+            {
+                for (int i = n; i < v_size; i++)
+                    _alloc.destroy(_data + i);
+                v_size = n;
+            }
+            else if (n > v_size)
+            {
+                if (n > v_capacity)
+                    reserve(n);
+                for (int i = v_size; i < n; i++)
+                    _alloc.construct(_data + i, val);
+                v_size = n;
+            }
+        }
+
+
         void assign(size_type count, const value_type& value) { }
 
     };
