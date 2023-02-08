@@ -14,6 +14,7 @@
 #define ITERATOR_HPP
 
 #include <iostream>
+#include "iterator_traits.hpp"
 
 namespace ft
 {
@@ -21,11 +22,11 @@ namespace ft
     class iterator
     {
         public:
-            typedef T                               iterator_type;
-            typedef T*                               pointer;
-            typedef T&                              reference;
-            typedef std::ptrdiff_t                  difference_type; //// need ask for it
-            typedef std::random_access_iterator_tag iterator_category; //// need ask
+            typedef T                                                                iterator_type;
+            typedef typename ft::iterator_traits<iterator_type>::pointer             pointer;
+            typedef typename ft::iterator_traits<iterator_type>::reference           reference;
+            typedef typename ft::iterator_traits<iterator_type>::difference_type     difference_type;
+            typedef typename ft::iterator_traits<iterator_type>::iterator_category   iterator_category;
 
             iterator(iterator_type p) : m_ptr(p) {}
             iterator_type base() const {return m_ptr;}
