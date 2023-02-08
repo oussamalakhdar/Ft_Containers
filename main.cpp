@@ -18,25 +18,40 @@
 
 int main()
 {
-    ft::vector<int> foo (1);   // three ints with a value of 100
-    ft::vector<int> bar (1);   // five ints with a value of 200
-    std::cout << foo.capacity() <<  ' ' << foo.size() << std::endl;
-    std::cout << bar.capacity() <<  ' ' << bar.size() << std::endl;
-    std::cout << '\n';
-    foo.swap(bar);
-    std::cout << foo.capacity() <<  ' ' << foo.size() << std::endl;
-    std::cout << bar.capacity() <<  ' ' << bar.size() << std::endl;
-    std::cout << "foo contains:";
-    for (unsigned i=0; i<foo.size(); i++)
-        std::cout << ' ' << foo[i];
+    std::vector<int> myvector;
+
+    // set some initial content:
+    for (int i=1;i<10;i++) myvector.push_back(i);
+
+    myvector.resize(5);
+    myvector.resize(8,100);
+    myvector.resize(12);
+
+    std::cout << "myvector contains:";
+    for (int i=0;i<myvector.size();i++)
+        std::cout << ' ' << myvector[i];
     std::cout << '\n';
 
-    std::cout << "bar contains:";
-    for (unsigned i=0; i<bar.size(); i++)
-        std::cout << ' ' << bar[i];
-    std::cout << '\n';
+//    ft::vector<int> foo (10, 6) ;   // three ints with a value of 100
+//    std::vector<int> bar (10, 6);   // five ints with a value of 200
+//    c
+//    std::cout << bar.capacity() <<  ' ' << bar.size()  << ' ' << bar[5]<< std::endl;
+//    std::cout << '\n';
+////    foo.resize(5);
+////    bar.resize(5);
+//    std::cout << foo.capacity() <<  ' ' << foo.size()  << ' ' << foo[5] << std::endl;
+//    std::cout << bar.capacity() <<  ' ' << bar.size() << ' ' << bar[5] << std::endl;
+//    std::cout << "foo contains:";
+//    for (unsigned i=0; i<foo.size(); i++)
+//        std::cout << ' ' << foo[i];
+//    std::cout << '\n';
+//
+//    std::cout << "bar contains:";
+//    for (unsigned i=0; i<bar.size(); i++)
+//        std::cout << ' ' << bar[i];
+//    std::cout << '\n';
 
-//    system("leaks a.out");
+    system("leaks a.out");
     return 0;
 //    ft::vector<int> t;
 //    std::vector <int> a;
