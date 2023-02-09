@@ -48,14 +48,13 @@ namespace ft
                           : _alloc(alloc), v_capacity(0), v_size(0), _data(nullptr) {}
 
         explicit vector (size_type n, const value_type& val = value_type(),\
-                            const allocator_type& alloc = allocator_type()) : _alloc(alloc)
+                            const allocator_type& alloc = allocator_type()) \
+                            : _alloc(alloc), v_capacity(n), v_size(n)
         {
 
             _data = _alloc.allocate(sizeof (T) * n);
             for (int i = 0; i < n; ++i)
                 _data[i] = val;
-            v_capacity = n;
-            v_size = n;
         }
         reference operator[] (size_type n) { return _data[n]; }
         const_reference operator[] (size_type n) const { return _data[n]; }
@@ -89,13 +88,13 @@ namespace ft
 
         size_type size() const { return v_size; }
 
-//        size_type max_size() const {
-//            return static_cast<T>(std::pow(2, sizeof(T) * 8)) / sizeof(T);
-//        }
-        size_type max_size() const
-        {
-            return _alloc.max_size();
+        size_type max_size() const {
+            return static_cast<T>(std::pow(2, sizeof(T) * 8)) / sizeof(T);
         }
+//        size_type max_size() const
+//        {
+//            return _alloc.max_size();
+//        }
 
         allocator_type get_allocator() const { return _alloc; }
 
@@ -203,27 +202,11 @@ namespace ft
             }
         }
 
-        iterator begin()
-        {
-            iterator a(_data);
-            return a;
-        }
-        const_iterator begin() const
-        {
-            const_iterator a(_data);
-            return a;
-        }
+        iterator begin(){ iterator a(_data); return a; }
+        const_iterator begin() const { const_iterator a(_data); return a; }
 
-        iterator end()
-        {
-            iterator a(_data + v_size);
-            return a;
-        }
-        const_iterator end() const
-        {
-            const_iterator a(_data + v_size);
-            return a;
-        }
+        iterator end() { iterator a(_data + v_size); return a;}
+        const_iterator end() const { const_iterator a(_data + v_size); return a; }
 
         void assign(size_type count, const value_type& value) { }
 
