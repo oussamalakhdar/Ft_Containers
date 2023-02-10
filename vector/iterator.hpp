@@ -28,6 +28,7 @@ namespace ft
             typedef typename ft::iterator_traits<iterator_type>::difference_type     difference_type;
             typedef typename ft::iterator_traits<iterator_type>::iterator_category   iterator_category;
 
+            iterator() : m_ptr() {}
             iterator(iterator_type p) : m_ptr(p) {}
             iterator_type base() const {return m_ptr;}
 
