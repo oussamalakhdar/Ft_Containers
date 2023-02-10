@@ -6,7 +6,7 @@
 /*   By: olakhdar <olakhdar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 11:05:45 by olakhdar          #+#    #+#             */
-/*   Updated: 2023/02/10 18:42:05 by olakhdar         ###   ########.fr       */
+/*   Updated: 2023/02/10 20:53:31 by olakhdar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,11 @@ namespace ft
             pointer _data;
             size_type v_capacity;
             size_type v_size;
+        
         /* 
-         !┌────────────────────────────────────────────────────────────────────────────┐
-         !│               Member functions                                             │
-         !└────────────────────────────────────────────────────────────────────────────┘
-        */
+        !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+        !│                       MEMBER FUNCTIONS:                                                                            │
+        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/        
             explicit vector (const allocator_type& alloc = allocator_type()) \
                               : _alloc(alloc), v_capacity(0), v_size(0), _data(nullptr) {}
 
@@ -57,20 +57,15 @@ namespace ft
                                 : _alloc(alloc), v_capacity(n), v_size(n)
             {
 
-                _data = _alloc.allocate(n * sizeof(T));
+                _data = _alloc.allocate(n);
                 for (int i = 0; i < n; ++i)
-                   _alloc.construct(_data + (i * sizeof(T)), val);
+                   _alloc.construct(_data + (i), val);
             }
             ~vector(){
-                if (_data) {
-                    for (int i = 0; i < v_capacity; ++i)
-                        _alloc.destroy(_data + (sizeof(T) * i));
+                    clear();
                     _alloc.deallocate(_data, v_capacity);
-                }
             }
 
-            reference operator[] (size_type n) { return *(_data + (sizeof(T) * n)); }
-            const_reference operator[] (size_type n) const { return *(_data + (sizeof(T) * n)); }
             vector& operator= (const vector& x)
             {
                 _alloc = x._alloc;
@@ -79,6 +74,14 @@ namespace ft
                 v_size = x.v_size;
                 return *this;
             }
+            
+        /* 
+        !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+        !│                       ELEMENT ACCESS:                                                                              │
+        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+        
+            reference operator[] (size_type n) { return *(_data + ( n)); }
+            const_reference operator[] (size_type n) const { return *(_data + ( n)); }
 
             reference at (size_type n)
             {
@@ -96,79 +99,15 @@ namespace ft
             reference front() { return _data[0]; }
             const_reference front() const { return _data[0]; }
 
-            reference back() { return *(_data + (sizeof(T) * (v_size - 1))); }
-            const_reference back() const { return *(_data + (sizeof(T) * (v_size - 1))); }
-
-            bool empty() const {
-                if (v_size == 0)
-                    return true;
-                return false;
-            }
-
-            size_type capacity() const { return v_capacity;}
-
+            reference back() { return *(_data + ( (v_size - 1))); }
+            const_reference back() const { return *(_data + ( (v_size - 1))); }
+        /* 
+        !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+        !│                       CAPACITY:                                                                                    │
+        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/
             size_type size() const { return v_size; }
-
-            size_type max_size() const
-            {
-                return _alloc.max_size();
-            }
-
-            allocator_type get_allocator() const { return _alloc; }
-
-            void swap (vector& x)
-            {
-                vector tmp;
-                tmp = *this;
-                *this = x;
-                x = tmp;
-            }
-
-            void reserve (size_type n)
-            {
-                if (n > v_capacity)
-                {
-                    if (!empty())
-                    {
-                        pointer tmp;
-                        tmp = _alloc.allocate(sizeof(T) * n);
-                        for (int i = 0; i < v_capacity; ++i) {
-                            _alloc.construct(tmp + (sizeof(T) * i), *(_data + (sizeof(T) * i)));
-                            _alloc.destroy(_data + (sizeof(T) * i));
-                        }
-                        _alloc.deallocate(_data, v_capacity);
-
-                        _data = tmp;
-                    }
-                    else
-                        _data = _alloc.allocate(sizeof(T) * n);
-                    v_capacity = n;
-                }
-            }
-
-            void push_back (const value_type& val)
-            {
-                if (empty())
-                    reserve(1);
-                else if (v_size == v_capacity)
-                    reserve(v_capacity * 2);
-                _alloc.construct(_data + v_size++,  val);
-            }
-
-            void pop_back ()
-            {
-                if (v_size >=1 )
-                    _alloc.destroy(_data + --v_size);
-            }
-            void clear()
-            {
-                if (!empty())
-                {
-                    for (int i = 0; i < v_size; ++i)
-                        _alloc.destroy(_data + i);
-                    v_size = 0;
-                }
-            }
+            
+            size_type max_size() const { return _alloc.max_size(); }
 
             void resize (size_type n, value_type val = value_type())
             {
@@ -176,7 +115,7 @@ namespace ft
                 {
                     size_type i = n;
                     while (i < v_size) {
-                        _alloc.destroy(_data + (sizeof(T) * i));
+                        _alloc.destroy(_data + ( i));
                         i++;
                     }
                     v_size = n;
@@ -191,21 +130,104 @@ namespace ft
                     }
                     size_type i = v_size;
                     while (i < n) {
-                        _alloc.destroy(_data + (sizeof(T) * i));
-                        _alloc.construct(_data + (sizeof(T) * i), val);
+                        _alloc.destroy(_data + ( i));
+                        _alloc.construct(_data + ( i), val);
                         i++;
                     }
                     v_size = n;
                 }
             }
+            
+            size_type capacity() const { return v_capacity;}
 
+            bool empty() const {
+                if (v_size == 0)
+                    return true;
+                return false;
+            }
+            
+            void reserve (size_type n)
+            {
+                if (n > v_capacity)
+                {
+                    if (!empty())
+                    {
+                        pointer tmp;
+                        tmp = _alloc.allocate( n);
+                        for (int i = 0; i < v_capacity; ++i) {
+                            _alloc.construct(tmp + ( i), *(_data + ( i)));
+                            _alloc.destroy(_data + ( i));
+                        }
+                        _alloc.deallocate(_data, v_capacity);
+
+                        _data = tmp;
+                    }
+                    else
+                        _data = _alloc.allocate( n);
+                    v_capacity = n;
+                }
+            }
+        /* 
+        !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+        !│                       ALLOCATOR:                                                                                   │
+        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+            
+            allocator_type get_allocator() const { return _alloc; }
+        
+        /* 
+        !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+        !│                       ITERATORS:                                                                                   │
+        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+            
             iterator begin(){ iterator a(_data); return a; }
             const_iterator begin() const { const_iterator a(_data); return a; }
 
-            iterator end() { iterator a(_data + (v_size * sizeof(T))); return a;}
-            const_iterator end() const { const_iterator a(_data + (v_size * sizeof(T))); return a; }
-
+            iterator end() { iterator a(_data + (v_size)); return a;}
+            const_iterator end() const { const_iterator a(_data + (v_size)); return a; }
+            
+            
+        /* 
+        !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+        !│                       MODIFIERS:                                                                                   │
+        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/            
+            
             // void assign(size_type count, const value_type& value) { }
+            
+            void push_back (const value_type& val)
+            {
+                if (empty())
+                    reserve(1);
+                else if (v_size == v_capacity)
+                    reserve(v_capacity * 2);
+                _alloc.construct(_data + v_size++,  val);
+            }
+
+            void pop_back ()
+            {
+                if (v_size >=1 )
+                    _alloc.destroy(_data + --v_size);
+            }
+            
+            void swap (vector& x)
+            {
+                vector tmp;
+                tmp = *this;
+                *this = x;
+                x = tmp;
+            }
+
+            void clear()
+            {
+                if (!empty())
+                {
+                    for (int i = 0; i < v_size; ++i)
+                        _alloc.destroy(_data + i);
+                    v_size = 0;
+                }
+            }
+
+
+
 
             void assign(size_type n, const value_type& val)
                 {
@@ -215,7 +237,7 @@ namespace ft
                         v_size = n;
                         while (i < n)
                         {
-                            _alloc.construct(_data + ( sizeof(T) * i), val);
+                            _alloc.construct(_data + (  i), val);
                             i++;
                         }
                     }
@@ -224,9 +246,9 @@ namespace ft
                         _alloc.deallocate(_data,v_capacity);
                         v_capacity = n;
                         v_size = n;
-                        _data = _alloc.allocate(n * sizeof(T));
+                        _data = _alloc.allocate(n);
                         for (size_t i  = 0 ; i < n ; i++ )
-                            _alloc.construct(_data + (sizeof(T) * i),val);
+                            _alloc.construct(_data + ( i),val);
                     }
                 }
 
@@ -241,7 +263,7 @@ namespace ft
                         v_size = static_cast<size_t>(diff);
                         while (first != last)
                         {
-                            _alloc.construct(_data + ( sizeof(T) * i), *first);
+                            _alloc.construct(_data + (  i), *first);
                             first++;
                             i++;
                         }
@@ -251,11 +273,11 @@ namespace ft
                         _alloc.deallocate(_data,v_capacity);
                         v_capacity = static_cast<size_t>(diff);
                         v_size = static_cast<size_t>(diff);
-                        _data = _alloc.allocate(static_cast<size_t>(diff) * sizeof(T));
+                        _data = _alloc.allocate(static_cast<size_t>(diff));
                         size_t i = 0;
                         while (first != last)
                         {
-                            _alloc.construct(_data + (sizeof(T) * i),*first);
+                            _alloc.construct(_data + ( i),*first);
                             first++;
                             i++;
                         }
