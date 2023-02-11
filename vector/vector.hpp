@@ -6,7 +6,7 @@
 /*   By: olakhdar <olakhdar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 11:05:45 by olakhdar          #+#    #+#             */
-/*   Updated: 2023/02/10 20:53:31 by olakhdar         ###   ########.fr       */
+/*   Updated: 2023/02/11 10:21:15 by olakhdar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ namespace ft
             typedef typename allocator_type::const_pointer   const_pointer;
             typedef ft::iterator<pointer>                    iterator;
             typedef ft::iterator<const_pointer>              const_iterator;
-           typedef ft::reverse_iterator<iterator>         reverse_iterator;
-           typedef ft::reverse_iterator<const_iterator>   const_reverse_iterator;
+           typedef ft::reverse_iterator<iterator>            reverse_iterator;
+           typedef ft::reverse_iterator<const_iterator>      const_reverse_iterator;
             typedef typename allocator_type::difference_type difference_type;
             typedef typename allocator_type::size_type       size_type;
 
@@ -61,10 +61,10 @@ namespace ft
                 for (int i = 0; i < n; ++i)
                    _alloc.construct(_data + (i), val);
             }
-            ~vector(){
-                    clear();
-                    _alloc.deallocate(_data, v_capacity);
-            }
+//            ~vector(){
+//                    clear();
+//                    _alloc.deallocate(_data, v_capacity);
+//            }
 
             vector& operator= (const vector& x)
             {
@@ -184,14 +184,59 @@ namespace ft
 
             iterator end() { iterator a(_data + (v_size)); return a;}
             const_iterator end() const { const_iterator a(_data + (v_size)); return a; }
+
+            reverse_iterator rbegin() { reverse_iterator a(end()); return a; }
+            const_reverse_iterator rbegin() const { const_reverse_iterator a(end()); return a; }
+
+            reverse_iterator rend() { reverse_iterator a(begin()); return a; }
+            const_reverse_iterator rend() const { const_reverse_iterator a(begin()); return a; }
             
             
         /* 
         !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
         !│                       MODIFIERS:                                                                                   │
-        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/            
-            
-            // void assign(size_type count, const value_type& value) { }
+        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+
+//            template <class InputIterator>
+//            void assign (InputIterator first, InputIterator last)
+//            {
+//
+//            }
+            void assign(size_type n, const value_type& val)
+            {
+                if (n > v_capacity)
+                    reserve(n);
+                for (size_t i = 0; i < n; ++i )
+                {
+                    if (i < v_size)
+                        _alloc.destroy(_data + i);
+                    _alloc.construct(_data + i, val);
+                }
+                if (v_size < n)
+                       v_size = n;
+//                if (n <= v_capacity)
+//                {
+//                    for (size_t i = 0; i < n; ++i )
+//                    {
+//                        if (i < v_size)
+//                            _alloc.destroy(_data + i);
+//                        _alloc.construct(_data + i, val);
+//                    }
+//                    if (v_size < n)
+//                        v_size = n;
+//                }
+//                else if (n > v_capacity)
+//                {
+//                    reserve(n);
+//                    for (size_t i = 0; i < n; ++i )
+//                    {
+//                        if (i < v_size)
+//                            _alloc.destroy(_data + i);
+//                        _alloc.construct(_data + i, val);
+//                    }
+//                    v_size = n;
+//                }
+            }
             
             void push_back (const value_type& val)
             {
@@ -229,30 +274,30 @@ namespace ft
 
 
 
-            void assign(size_type n, const value_type& val)
-                {
-                    if (v_capacity >= n)
-                    {
-                        size_t i = 0;
-                        v_size = n;
-                        while (i < n)
-                        {
-                            _alloc.construct(_data + (  i), val);
-                            i++;
-                        }
-                    }
-                    else
-                    {
-                        _alloc.deallocate(_data,v_capacity);
-                        v_capacity = n;
-                        v_size = n;
-                        _data = _alloc.allocate(n);
-                        for (size_t i  = 0 ; i < n ; i++ )
-                            _alloc.construct(_data + ( i),val);
-                    }
-                }
+//            void assign(size_type n, const value_type& val)
+//                {
+//                    if (v_capacity >= n)
+//                    {
+//                        size_t i = 0;
+//                        v_size = n;
+//                        while (i < n)
+//                        {
+//                            _alloc.construct(_data + (  i), val);
+//                            i++;
+//                        }
+//                    }
+//                    else
+//                    {
+//                        _alloc.deallocate(_data,v_capacity);
+//                        v_capacity = n;
+//                        v_size = n;
+//                        _data = _alloc.allocate(n);
+//                        for (size_t i  = 0 ; i < n ; i++ )
+//                            _alloc.construct(_data + ( i),val);
+//                    }
+//                }
 
-                 template <class InputIterator>
+                template <class InputIterator>
                 void assign(InputIterator first, InputIterator last, typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
                 {
                     difference_type diff = std::distance(first, last);
@@ -284,6 +329,11 @@ namespace ft
                     }
                 }
 
+        /* 
+        !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+        !│                       RELATIONAL OPERATORS:                                                                                   │
+        !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/ 
+        
                 friend bool operator== (const vector& x, const vector& y) {
                     if (x.v_size != y.v_size)
                         return false;
