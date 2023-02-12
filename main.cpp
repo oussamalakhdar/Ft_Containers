@@ -18,15 +18,29 @@
 
 int main()
 {
-    std::vector<int> first(5,12);
-    ft::vector<int> f(5,12);
-    std::cout << "Size of first: " << first.size() << ' ' << first.capacity() << '\n';
-    std::cout << "Size of first: " << f.size() << ' ' << f.capacity() << '\n';
+    std::vector<int> f;
+    ft::vector<int> fpp;
+    for (int i = 0; i < 10; ++i)
+        fpp.push_back(i);
 
-    first.assign (7,100);             // 7 ints with a value of 100
-    f.assign (7,100);             // 7 ints with a value of 100
+    for (int i = 0; i < 10; ++i)
+        f.push_back(i);
 
-    std::cout << "Size of first: " << first.size() << ' ' << first.capacity() << '\n';
-    std::cout << "Size of first: " << f.size() << ' ' << f.capacity() << '\n';
-    return 0;
+    std::cout << fpp.capacity() << ' ' << fpp.size() << std::endl  ;
+    std::cout << f.capacity() << ' ' << f.size() << std::endl  ;
+
+    auto ipp = fpp.begin();
+    auto it = f.begin();
+
+    fpp.insert(ipp + 4, 2, 7);
+    f.insert( it+ 4, 2, 7);
+
+    for (int i = 0; i < fpp.size(); ++i)
+        std::cout << fpp[i] << ' ' ;
+    std::cout <<  std::endl;
+    for (int i = 0; i < f.size(); ++i)
+        std::cout << f[i] << ' ' ;
+
+    std::cout <<std::endl << fpp.capacity() << ' ' << fpp.size() << std::endl  ;
+    std::cout<< std::endl   << f.capacity() << ' ' << f.size() << std::endl  ;
 }
