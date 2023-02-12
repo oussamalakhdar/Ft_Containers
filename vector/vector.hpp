@@ -282,9 +282,44 @@ namespace ft
                 iterator _iter(_data + d);
                 return _iter;
             }
-            void insert (iterator position, size_type n, const value_type& val
+            void insert (iterator position, size_type n, const value_type& val)
             {
+                iterator a = position;
+                for (int k = 0; k < n; ++k)
+                {
+                    a = insert(a++, val);
 
+                }
+
+//                size_t i = 0;
+//                size_t j = 0;
+//                iterator it = begin();
+//                pointer tmp;
+//                if (v_size + n > v_capacity)
+//                    tmp = _alloc.allocate(v_size + n);
+//                else
+//                    tmp = _alloc.allocate(v_capacity);
+//                v_size += n;
+//                while (i <  v_size)
+//                {
+//                    if (it == position)
+//                    {
+//                        for (int k = 0; k < n; ++k) {
+//                            _alloc.construct(tmp + i++, val);
+//                        }
+//                            _alloc.construct(tmp + i, *(_data + j));
+//                    }
+//                    else
+//                    {
+//                        _alloc.construct(tmp + i, *(_data + j));
+//                        _alloc.destroy(_data + j);
+//                    }
+//                    ++it;
+//                    ++i;
+//                    ++j;
+//                }
+//                _alloc.deallocate(_data, v_capacity);
+//                _data = tmp;
             }
 //                template <class InputIterator>
 //                void insert (iterator position, InputIterator first, InputIterator last)
