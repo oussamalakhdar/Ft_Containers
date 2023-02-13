@@ -18,29 +18,25 @@
 
 int main()
 {
-    std::vector<int> f;
-    ft::vector<int> fpp;
-    for (int i = 0; i < 10; ++i)
-        fpp.push_back(i);
+    ft::vector<int> myvector (3,100);
+    ft::vector<int>::iterator it;
 
-    for (int i = 0; i < 10; ++i)
-        f.push_back(i);
+    it = myvector.begin();
+    it = myvector.insert ( it , 200 );
 
-    std::cout << fpp.capacity() << ' ' << fpp.size() << std::endl  ;
-    std::cout << f.capacity() << ' ' << f.size() << std::endl  ;
+    myvector.insert (it,2,300);
 
-    auto ipp = fpp.begin();
-    auto it = f.begin();
+    // "it" no longer valid, get a new one:
+    it = myvector.begin();
 
-    fpp.insert(ipp + 4, 2, 7);
-    f.insert( it+ 4, 2, 7);
+    ft::vector<int> anothervector (2,400);
+    myvector.insert (it+2,anothervector.begin(),anothervector.end());
 
-    for (int i = 0; i < fpp.size(); ++i)
-        std::cout << fpp[i] << ' ' ;
-    std::cout <<  std::endl;
-    for (int i = 0; i < f.size(); ++i)
-        std::cout << f[i] << ' ' ;
+    int myarray [] = { 501,502,503 };
+    myvector.insert (myvector.begin(), myarray, myarray+3);
 
-    std::cout <<std::endl << fpp.capacity() << ' ' << fpp.size() << std::endl  ;
-    std::cout<< std::endl   << f.capacity() << ' ' << f.size() << std::endl  ;
+    std::cout << "myvector contains:";
+    for (it=myvector.begin(); it<myvector.end(); it++)
+        std::cout << ' ' << *it;
+    std::cout << '\n';;
 }

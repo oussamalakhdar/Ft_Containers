@@ -1,5 +1,5 @@
-/* ************************************************************************** */
 /*                                                                            */
+/* ************************************************************************** */
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
@@ -59,11 +59,23 @@ namespace ft
 
                 _data = _alloc.allocate(n);
                 for (int i = 0; i < n; ++i)
-                   _alloc.construct(_data + (i), val);
+                   _alloc.construct(_data + i, val);
             }
+//            template <class InputIterator>
+//            vector (InputIterator first, InputIterator last,
+//                    const allocator_type& alloc = allocator_type())
+//            {
+////                InputIterator f_iter = first;
+////                InputIterator f_iter = first;
+//                size_t d = 0;
+//                for (InputIterator it = first; it != last; ++it )
+//                    d++;
+//            }
+//            vector (const vector& x);
+
 //            ~vector(){
 //                    clear();
-//                    _alloc.deallocate(_data, v_capacity);
+////                    _alloc.deallocate(_data, v_capacity);
 //            }
 
             vector& operator= (const vector& x)
@@ -107,7 +119,7 @@ namespace ft
         !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/
             size_type size() const { return v_size; }
             
-            size_type max_size() const { return _alloc.max_size(); }
+            size_type max_size() const { return std::min<size_type>(_alloc.max_size() , std::numeric_limits<difference_type>::max()); }
 
             void resize (size_type n, value_type val = value_type())
             {
@@ -320,30 +332,66 @@ namespace ft
                 }
                 _alloc.deallocate(_data, v_capacity);
                 _data = tmp;
-                }
-                template <class InputIterator>
-                void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
+            }
+            template <class InputIterator>
+            void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
+            {
+                size_t i = 0;
+                size_t j = 0;
+                size_t d = 0;
+                iterator it = begin();
+//                iterator iter_dis = first;
+                pointer tmp;
+                for (InputIterator iter_dis = first; iter_dis != last; ++iter_dis )
+                    d++;
+//                while (iter_dis != last) {
+//                    ++iter_dis;
+//                    ++d;
+//                }
+                if (v_size + d > v_capacity)
+                    tmp = _alloc.allocate(v_size + d);
+                else
+                    tmp = _alloc.allocate(v_capacity);
+                while (i <  v_size)
                 {
-
-                }
-
-                void swap (vector& x)
-                {
-                    vector tmp;
-                    tmp = *this;
-                    *this = x;
-                    x = tmp;
-                }
-
-                void clear()
-                {
-                    if (!empty())
+                    if (it == position)
                     {
-                        for (int i = 0; i < v_size; ++i)
-                            _alloc.destroy(_data + i);
-                        v_size = 0;
+                        for (InputIterator k = first; k != last; ++k) {
+                            _alloc.construct(tmp + i++, *k);
+                            ++v_size;
+                        }
+                        _alloc.construct(tmp + i, *(_data + j));
                     }
+                    else
+                    {
+                        _alloc.construct(tmp + i, *(_data + j));
+                        _alloc.destroy(_data + j);
+                    }
+                    ++it;
+                    ++i;
+                    ++j;
                 }
+                _alloc.deallocate(_data, v_capacity);
+                _data = tmp;
+            }
+
+            void swap (vector& x)
+            {
+                vector tmp;
+                tmp = *this;
+                *this = x;
+                x = tmp;
+            }
+
+            void clear()
+            {
+                if (!empty())
+                {
+                    for (int i = 0; i < v_size; ++i)
+                        _alloc.destroy(_data + i);
+                    v_size = 0;
+                }
+            }
 
 
         /* 
