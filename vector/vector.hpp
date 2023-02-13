@@ -61,22 +61,33 @@ namespace ft
                 for (int i = 0; i < n; ++i)
                    _alloc.construct(_data + i, val);
             }
-//            template <class InputIterator>
-//            vector (InputIterator first, InputIterator last,
-//                    const allocator_type& alloc = allocator_type())
-//            {
-////                InputIterator f_iter = first;
-////                InputIterator f_iter = first;
-//                size_t d = 0;
-//                for (InputIterator it = first; it != last; ++it )
-//                    d++;
-//            }
+            template <class InputIterator>
+            vector (InputIterator first, InputIterator last,
+                    const allocator_type& alloc = allocator_type(),\
+                    typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
+            {
+//                InputIterator f_iter = first;
+//                InputIterator f_iter = first;
+                size_t d = 0;
+                size_t i = 0;
+                for (InputIterator it = first; it != last; ++it )
+                    d++;
+                _data = _alloc.allocate(d);
+                for (InputIterator in_iter = first; in_iter != last; ++ in_iter) {
+                    _alloc.construct(_data + i, *(in_iter));
+                    ++i;
+                }
+                v_capacity = d;
+                v_size = d;
+            }
 //            vector (const vector& x);
 
-//            ~vector(){
-//                    clear();
-////                    _alloc.deallocate(_data, v_capacity);
-//            }
+            ~vector(){
+                if (v_capacity > 0) {
+                    clear();
+                    _alloc.deallocate(_data, v_capacity);
+                }
+            }
 
             vector& operator= (const vector& x)
             {
@@ -213,7 +224,7 @@ namespace ft
             void assign (InputIterator first, InputIterator last, typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
             {
                 InputIterator f = first;
-                size_t d = 0;
+                difference_type d = 0;
                 while (f != last) {
                     ++d;
                     ++f;
@@ -340,14 +351,9 @@ namespace ft
                 size_t j = 0;
                 size_t d = 0;
                 iterator it = begin();
-//                iterator iter_dis = first;
                 pointer tmp;
                 for (InputIterator iter_dis = first; iter_dis != last; ++iter_dis )
                     d++;
-//                while (iter_dis != last) {
-//                    ++iter_dis;
-//                    ++d;
-//                }
                 if (v_size + d > v_capacity)
                     tmp = _alloc.allocate(v_size + d);
                 else
