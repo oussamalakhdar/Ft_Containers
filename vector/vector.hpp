@@ -49,12 +49,12 @@ namespace ft
         !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
         !│                       MEMBER FUNCTIONS:                                                                            │
         !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/        
-            explicit vector (const allocator_type& alloc = allocator_type()) \
-                              : _alloc(alloc), v_capacity(0), v_size(0), _data(nullptr) {}
+            explicit vector (const allocator_type& alloc = allocator_type())
+                              : _alloc(alloc), v_capacity(0), v_size(0), _data(NULL) {}
 
-            explicit vector (size_type n, const value_type& val = value_type(),\
-                                const allocator_type& alloc = allocator_type()) \
-                                : _alloc(alloc), v_capacity(n), v_size(n)
+            explicit vector (size_type n, const value_type& val = value_type(),
+                                const allocator_type& alloc = allocator_type())
+                                : _alloc(alloc), v_capacity(n), v_size(n), _data(NULL)
             {
 
                 _data = _alloc.allocate(n);
@@ -65,9 +65,8 @@ namespace ft
             vector (InputIterator first, InputIterator last,
                     const allocator_type& alloc = allocator_type(),\
                     typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
+                    :  _alloc(alloc), v_capacity(0), v_size(0), _data(NULL)
             {
-//                InputIterator f_iter = first;
-//                InputIterator f_iter = first;
                 size_t d = 0;
                 size_t i = 0;
                 for (InputIterator it = first; it != last; ++it )
@@ -80,10 +79,21 @@ namespace ft
                 v_capacity = d;
                 v_size = d;
             }
-//            vector (const vector& x);
+            vector (const vector& x)
+            {
+                v_capacity = x.capacity();
+                v_size = x.size();
+                _alloc = x.get_allocator();
+                if (x.size() > 0)
+                {
+                    _data = _alloc.allocate(v_capacity);
+                    for (size_t i = 0; i < x.size(); ++i)
+                        _alloc.construct(_data + i, x._data[i]);
+                }
+            }
 
             ~vector(){
-                if (v_capacity > 0) {
+                if (capacity() > 0) {
                     clear();
                     _alloc.deallocate(_data, v_capacity);
                 }
@@ -91,8 +101,19 @@ namespace ft
 
             vector& operator= (const vector& x)
             {
+                if (this == &x)
+                    return *this;
+                if (x.size() > 0)
+                {
+                    if (size() > 0) {
+                        clear();
+                        _alloc.deallocate(_data, v_capacity);
+                    }
+                    _data = _alloc.allocate(x.capacity());
+                    for (int i = 0; i < x.size(); ++i)
+                        _alloc.construct(_data + i, x._data[i]);
+                }
                 _alloc = x._alloc;
-                _data = x._data;
                 v_capacity = x.v_capacity;
                 v_size = x.v_size;
                 return *this;
@@ -202,7 +223,7 @@ namespace ft
         !│                       ITERATORS:                                                                                   │
         !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/
             
-            iterator begin(){ iterator a(_data); return a; }
+            iterator begin(){  return iterator(_data); }
             const_iterator begin() const { const_iterator a(_data); return a; }
 
             iterator end() { iterator a(_data + (v_size)); return a;}
@@ -221,7 +242,8 @@ namespace ft
         !└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 
             template <class InputIterator>
-            void assign (InputIterator first, InputIterator last, typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
+            void assign (InputIterator first, InputIterator last,
+                         typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
             {
                 InputIterator f = first;
                 difference_type d = 0;
@@ -240,21 +262,18 @@ namespace ft
                     ++first;
                     ++i;
                 }
-                if (v_size < d)
                     v_size = d;
             }
             void assign(size_type n, const value_type& val)
             {
+                clear();
                 if (n > v_capacity)
                     reserve(n);
-                for (size_type i = 0; i < n; ++i )
+                for (size_type i = 0; i < n; ++i)
                 {
-                    if (i < v_size)
-                        _alloc.destroy(_data + i);
                     _alloc.construct(_data + i, val);
                 }
-                if (v_size < n)
-                    v_size = n;
+                v_size = n;
             }
 
             void push_back (const value_type& val)
@@ -307,13 +326,6 @@ namespace ft
             }
             void insert (iterator position, size_type n, const value_type& val)
             {
-//                iterator a = position;
-//                for (int k = 0; k < n; ++k)
-//                {
-//                    a = insert(a++, val);
-//
-//                }
-
                 size_t i = 0;
                 size_t j = 0;
                 iterator it = begin();
@@ -345,7 +357,8 @@ namespace ft
                 _data = tmp;
             }
             template <class InputIterator>
-            void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
+            void insert (iterator position, InputIterator first, InputIterator last,
+                         typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
             {
                 size_t i = 0;
                 size_t j = 0;
@@ -380,13 +393,96 @@ namespace ft
                 _alloc.deallocate(_data, v_capacity);
                 _data = tmp;
             }
+            iterator erase (iterator position)
+            {
+                size_t i = 0;
+                size_t j = 0;
+                size_t d = 0;
+                iterator it = begin();
+                pointer tmp;
+//                std::cout <<  *(--end()) << std::endl;
+                if (position == --end()) {
+                    pop_back();
+                    return --end();
+                }
+                else
+                {
+                    tmp = _alloc.allocate(v_capacity);
+                    while (i < v_size) {
+                        if (it == position) {
+                            _alloc.destroy(_data + j);
+                            d = j;
+//                            ++j;
+                            --i;
+                        } else {
+                            _alloc.construct(tmp + i, *(_data + j));
+                            _alloc.destroy(_data + j);
+                        }
+                        ++it;
+                        ++i;
+                        ++j;
+                    }
+                    _alloc.deallocate(_data, v_capacity);
+                    _data = tmp;
+                }
+
+                iterator _iter(_data + d);
+                --v_size;
+                return _iter;
+            }
+//            iterator erase (iterator first, iterator last)
+//            {
+//                size_t i = 0;
+//                size_t j = 0;
+//                size_t d = 0;
+//                iterator it = begin();
+//                pointer tmp;
+//                tmp = _alloc.allocate(v_capacity);
+//                while (i <  v_size)
+//                {
+//                    if (it == position)
+//                    {
+////                        _alloc.construct(tmp + i++, val);
+////                        _alloc.construct(tmp + i, *(_data + j));
+//                        _alloc.destroy(_data + j);
+//                        d = j;
+////                        ++j;
+//                        --i;
+//                    }
+//                    else
+//                    {
+//                        _alloc.construct(tmp + i, *(_data + j));
+//                        _alloc.destroy(_data + j);
+//                    }
+//                    ++it;
+//                    ++i;
+//                    ++j;
+//                }
+//                _alloc.deallocate(_data, v_capacity);
+//                _data = tmp;
+//                iterator _iter(_data + d);
+//                --v_size;
+//                return _iter;
+//            }
 
             void swap (vector& x)
             {
-                vector tmp;
-                tmp = *this;
-                *this = x;
-                x = tmp;
+                pointer t_data;
+                size_type t_c;
+                size_type t_s;
+
+                t_data = this->_data;
+                t_c = this->v_capacity;
+                t_s = this->v_size;
+
+                this->_data = x._data;
+                this->v_capacity = x.v_capacity;
+                this->v_size = x.v_size;
+
+                x._data = t_data;
+                x.v_capacity = t_c;
+                x.v_capacity = t_s;
+
             }
 
             void clear()
@@ -432,5 +528,11 @@ namespace ft
     };
 
 }
+
+//namespace std
+//{
+//    template<class T, class Alloc>
+//    void swap(ft::vector<T, Alloc> &v1, ft::vector<T, Alloc> &v2) { v1.swap(v2); }
+//}
 
 #endif
