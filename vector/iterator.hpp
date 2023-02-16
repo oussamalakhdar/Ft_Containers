@@ -45,11 +45,12 @@ namespace ft
             reference   operator[](difference_type a) const { return m_ptr[a]; }
 
             friend bool operator==(const iterator &a, const iterator &b) { return a.base() == b.base(); }
-            friend bool operator!=(const iterator &a, const iterator &b) { return !(a == b); }
             friend bool operator<(const iterator &a, const iterator &b) { return a.base() < b.base(); }
+            friend bool operator!=(const iterator &a, const iterator &b) { return !(a == b); }
             friend bool operator>(const iterator &a, const iterator &b) { return b < a; }
             friend bool operator>=(const iterator &a, const iterator &b) { return !(a < b); }
             friend bool operator<=(const iterator &a, const iterator &b) { return !(b < a); }
+            friend difference_type operator-(const iterator& a, const iterator& b) { return a.base() - b.base();}
 
         private:
             iterator_type m_ptr;

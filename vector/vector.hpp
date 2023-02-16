@@ -393,77 +393,31 @@ namespace ft
                 _alloc.deallocate(_data, v_capacity);
                 _data = tmp;
             }
+
             iterator erase (iterator position)
             {
-                size_t i = 0;
-                size_t j = 0;
-                size_t d = 0;
-                iterator it = begin();
-                pointer tmp;
-//                std::cout <<  *(--end()) << std::endl;
-                if (position == --end()) {
-                    pop_back();
-                    return --end();
-                }
-                else
-                {
-                    tmp = _alloc.allocate(v_capacity);
-                    while (i < v_size) {
-                        if (it == position) {
-                            _alloc.destroy(_data + j);
-                            d = j;
-//                            ++j;
-                            --i;
-                        } else {
-                            _alloc.construct(tmp + i, *(_data + j));
-                            _alloc.destroy(_data + j);
-                        }
-                        ++it;
-                        ++i;
-                        ++j;
-                    }
-                    _alloc.deallocate(_data, v_capacity);
-                    _data = tmp;
-                }
+                difference_type f_index = begin() - position;
 
-                iterator _iter(_data + d);
-                --v_size;
-                return _iter;
+                for (difference_type i = f_index; i + 1 < v_size; i++)
+                    _data[i] = _data[i + 1];
+
+                pop_back();
+
+                return position;
             }
-//            iterator erase (iterator first, iterator last)
-//            {
-//                size_t i = 0;
-//                size_t j = 0;
-//                size_t d = 0;
-//                iterator it = begin();
-//                pointer tmp;
-//                tmp = _alloc.allocate(v_capacity);
-//                while (i <  v_size)
-//                {
-//                    if (it == position)
-//                    {
-////                        _alloc.construct(tmp + i++, val);
-////                        _alloc.construct(tmp + i, *(_data + j));
-//                        _alloc.destroy(_data + j);
-//                        d = j;
-////                        ++j;
-//                        --i;
-//                    }
-//                    else
-//                    {
-//                        _alloc.construct(tmp + i, *(_data + j));
-//                        _alloc.destroy(_data + j);
-//                    }
-//                    ++it;
-//                    ++i;
-//                    ++j;
-//                }
-//                _alloc.deallocate(_data, v_capacity);
-//                _data = tmp;
-//                iterator _iter(_data + d);
-//                --v_size;
-//                return _iter;
-//            }
+            iterator erase (iterator first, iterator last)
+            {
+                size_type f_index = first - begin();
+                size_type distance = last - first;
+
+                for (size_type i = f_index; i + distance < v_size; ++i)
+                    _data[i] = _data[i + distance];
+
+                for (size_type i = 0; i < distance; ++i)
+                    pop_back();
+
+                return first;
+            }
 
             void swap (vector& x)
             {
