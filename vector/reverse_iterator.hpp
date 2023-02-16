@@ -41,28 +41,34 @@ namespace ft
             reverse_iterator& operator-= (difference_type n) { _current += n; return *this; }
             reference operator[] (difference_type n) const { _current - (n - 1); }
 
-            friend bool operator== (const reverse_iterator<Iterator>& x,
-                             const reverse_iterator<Iterator>& y) {
+            template <class Iter1, class Iter2>
+            friend bool operator== (const reverse_iterator<Iter1>& x,
+                             const reverse_iterator<Iter2>& y) {
                 return  x._current == y._current;
             }
-            friend bool operator!= (const reverse_iterator<Iterator>& x,
-                            const reverse_iterator<Iterator>& y) {
+            template <class Iter1, class Iter2>
+            friend bool operator!= (const reverse_iterator<Iter1>& x,
+                            const reverse_iterator<Iter2>& y) {
                 return  x._current != y._current;
             }
-            friend bool operator<  (const reverse_iterator<Iterator>& x,
-                             const reverse_iterator<Iterator>& y){
+            template <class Iter1, class Iter2>
+            friend bool operator<  (const reverse_iterator<Iter1>& x,
+                             const reverse_iterator<Iter2>& y){
                 return  x._current > y._current;
             }
-            friend bool operator<= (const reverse_iterator<Iterator>& x,
-                             const reverse_iterator<Iterator>& y){
+            template <class Iter1, class Iter2>
+            friend bool operator<= (const reverse_iterator<Iter1>& x,
+                             const reverse_iterator<Iter2>& y){
                 return  x._current >= y._current;
             }
-            friend bool operator>  (const reverse_iterator<Iterator>& x,
-                             const reverse_iterator<Iterator>& y){
+            template <class Iter1, class Iter2>
+            friend bool operator>  (const reverse_iterator<Iter1>& x,
+                             const reverse_iterator<Iter2>& y){
                 return  x._current < y._current;
             }
-            friend bool operator>= (const reverse_iterator<Iterator>& x,
-                             const reverse_iterator<Iterator>& y){
+            template <class Iter1, class Iter2>
+            friend bool operator>= (const reverse_iterator<Iter1>& x,
+                             const reverse_iterator<Iter2>& y){
                 return  x._current <= y._current;
             }
 
