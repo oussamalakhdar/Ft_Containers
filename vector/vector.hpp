@@ -298,8 +298,10 @@ namespace ft
                 size_t d = 0;
                 iterator it = begin();
                 pointer tmp;
-                if (v_size++ + 1 > v_capacity)
-                    tmp = _alloc.allocate(v_size);
+                if (v_size == v_capacity){
+                    tmp = _alloc.allocate(v_size * 2);
+                    v_capacity = v_size * 2;
+                }
                 else
                     tmp = _alloc.allocate(v_capacity);
                 while (i <  v_size)
@@ -322,6 +324,7 @@ namespace ft
                 _alloc.deallocate(_data, v_capacity);
                 _data = tmp;
                 iterator _iter(_data + d);
+                v_size += 1;
                 return _iter;
             }
             void insert (iterator position, size_type n, const value_type& val)
@@ -330,8 +333,16 @@ namespace ft
                 size_t j = 0;
                 iterator it = begin();
                 pointer tmp;
-                if (v_size + n > v_capacity)
-                    tmp = _alloc.allocate(v_size + n);
+                if (v_size + n > v_capacity) {
+                    if (v_size + n <= v_capacity * 2) {
+                        tmp = _alloc.allocate(v_capacity * 2);
+                        v_capacity *= 2;
+                    }
+                    else{
+                        tmp = _alloc.allocate(v_size + n);
+                        v_capacity = v_size + n;
+                    }
+                }
                 else
                     tmp = _alloc.allocate(v_capacity);
                 v_size += n;
@@ -396,14 +407,7 @@ namespace ft
 
             iterator erase (iterator position)
             {
-                difference_type f_index = begin() - position;
-
-                for (difference_type i = f_index; i + 1 < v_size; i++)
-                    _data[i] = _data[i + 1];
-
-                pop_back();
-
-                return position;
+                return erase (position, position + 1);
             }
             iterator erase (iterator first, iterator last)
             {
