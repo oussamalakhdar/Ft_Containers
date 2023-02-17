@@ -47,10 +47,11 @@ namespace ft
             size_type v_size;
             void freax()
             {
-                clear();
-                _alloc.deallocate(_data, v_capacity);
-                _data = NULL;
-                v_capacity = 0;
+                if (v_capacity > 0){
+                    _alloc.deallocate(_data, v_capacity);
+                    _data = NULL;
+                    v_capacity = 0;
+                }
             }
 
         public:
@@ -65,7 +66,6 @@ namespace ft
                                 const allocator_type& alloc = allocator_type())
                                 : _alloc(alloc), _data(NULL), v_capacity(0), v_size(n)
             {
-
                 _data = _alloc.allocate(n);
                 for (size_t i = 0; i < n; ++i)
                    _alloc.construct(_data + i, val);
@@ -104,32 +104,14 @@ namespace ft
             {
                 if (this == &x)
                     return *this;
-//                clear();
-//                _alloc.deallocate(_data, v_capacity);
-//                _data = NULL;
-//                v_capacity = 0;
-                freax();
+                clear();
+                if (_data != NULL)
+                    _alloc.deallocate(_data, v_capacity);
+                v_capacity = 0;
                 _alloc = x.get_allocator();
-//                std::cout << "*****" <<  x.capacity()<< ' ' <<  x.size() << std::endl;
                 _data = _alloc.allocate(x.capacity());
                 for (size_t i = 0; i < x.size(); ++i)
                     _alloc.construct(_data + i, x._data[i]);
-                v_capacity = x.v_capacity;
-                v_size = x.v_size;
-                return *this;
-                if (this == &x)
-                    return *this;
-                _alloc = x.get_allocator();
-                if (x.size() > 0)
-                {
-                    if (size() > 0) {
-                        clear();
-                        _alloc.deallocate(_data, v_capacity);
-                    }
-                    _data = _alloc.allocate(x.capacity());
-                    for (size_t i = 0; i < x.size(); ++i)
-                        _alloc.construct(_data + i, x._data[i]);
-                }
                 v_capacity = x.v_capacity;
                 v_size = x.v_size;
                 return *this;
@@ -215,7 +197,7 @@ namespace ft
                     {
                         pointer tmp;
                         tmp = _alloc.allocate(n);
-                        for (size_t i = 0; i < v_capacity; ++i) {
+                        for (size_t i = 0; i < v_size; ++i) {
                             _alloc.construct(tmp + i, *(_data + i));
                             _alloc.destroy(_data + i);
                         }
@@ -223,8 +205,10 @@ namespace ft
 
                         _data = tmp;
                     }
-                    else
+                    else{
+                        freax();
                         _data = _alloc.allocate(n);
+                    }
                     v_capacity = n;
                 }
             }
@@ -263,18 +247,17 @@ namespace ft
                          typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
             {
                 InputIterator f = first;
-                size_t d = 0;
+                size_type d = 0;
                 while (f != last) {
                     ++d;
-                    ++f;
+                    f++;
                 }
+                clear();
                 if (d > v_capacity)
                     reserve(d);
                 size_t i = 0;
                 while (first != last)
                 {
-                    if (i < v_size)
-                        _alloc.destroy(_data + i);
                     _alloc.construct(_data + i, *first);
                     ++first;
                     ++i;
@@ -287,9 +270,7 @@ namespace ft
                 if (n > v_capacity)
                     reserve(n);
                 for (size_type i = 0; i < n; ++i)
-                {
                     _alloc.construct(_data + i, val);
-                }
                 v_size = n;
             }
 
@@ -338,7 +319,7 @@ namespace ft
                     ++i;
                     ++j;
                 }
-                _alloc.deallocate(_data, v_capacity);
+                    _alloc.deallocate(_data, v_capacity);
                 _data = tmp;
                 iterator _iter(_data + d);
                 v_size += 1;
