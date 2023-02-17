@@ -23,13 +23,18 @@ namespace ft
     {
         public:
             typedef T                                                                iterator_type;
+            typedef typename ft::iterator_traits<iterator_type>::iterator_category   iterator_category;
+            typedef typename ft::iterator_traits<iterator_type>::value_type          value_type;
+            typedef typename ft::iterator_traits<iterator_type>::difference_type     difference_type;
             typedef typename ft::iterator_traits<iterator_type>::pointer             pointer;
             typedef typename ft::iterator_traits<iterator_type>::reference           reference;
-            typedef typename ft::iterator_traits<iterator_type>::difference_type     difference_type;
-            typedef typename ft::iterator_traits<iterator_type>::iterator_category   iterator_category;
 
             iterator() : m_ptr() {}
             iterator(iterator_type p) : m_ptr(p) {}
+            template <class _Up> iterator(const iterator<_Up>& u) : m_ptr(u.base()) {}
+            template <class _Up> iterator& operator=(const iterator<_Up>& u)
+                                        { m_ptr = u.base(); return *this; }
+
             iterator_type base() const {return m_ptr;}
 
             reference   operator*() const { return *m_ptr; }
@@ -44,16 +49,26 @@ namespace ft
             iterator&   operator-=(difference_type a) { *this += -a; return *this;}
             reference   operator[](difference_type a) const { return m_ptr[a]; }
 
-            friend bool operator==(const iterator &a, const iterator &b) { return a.base() == b.base(); }
-            friend bool operator<(const iterator &a, const iterator &b) { return a.base() < b.base(); }
-            friend bool operator!=(const iterator &a, const iterator &b) { return !(a == b); }
-            friend bool operator>(const iterator &a, const iterator &b) { return b < a; }
-            friend bool operator>=(const iterator &a, const iterator &b) { return !(a < b); }
-            friend bool operator<=(const iterator &a, const iterator &b) { return !(b < a); }
-            friend difference_type operator-(const iterator& a, const iterator& b) { return a.base() - b.base();}
 
         private:
             iterator_type m_ptr;
     };
+
+            template <class Iter1, class Iter2>
+            bool operator==(const iterator<Iter1> &a, const iterator<Iter2> &b) { return a.base() == b.base(); }
+            template <class Iter1, class Iter2>
+            bool operator<(const iterator<Iter1> &a, const iterator<Iter2> &b) { return a.base() < b.base(); }
+            template <class Iter1, class Iter2>
+            bool operator!=(const iterator<Iter1> &a, const iterator<Iter2> &b) { return !(a == b); }
+            template <class Iter1, class Iter2>
+            bool operator>(const iterator<Iter1> &a, const iterator<Iter2> &b) { return b < a; }
+            template <class Iter1, class Iter2>
+            bool operator>=(const iterator<Iter1> &a, const iterator<Iter2> &b) { return !(a < b); }
+            template <class Iter1, class Iter2>
+            bool operator<=(const iterator<Iter1> &a, const iterator<Iter2> &b) { return !(b < a); }
+            template <class Iter1, class Iter2>
+            typename iterator<Iter1>::difference_type operator-(const iterator<Iter1>& a, const iterator<Iter2>& b) { return a.base() - b.base();}
+            template <class Iter1>
+            iterator<Iter1> operator+(typename iterator<Iter1>::difference_type n, iterator<Iter1> a) { a += n; return a; }
 }
 #endif

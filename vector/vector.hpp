@@ -40,11 +40,20 @@ namespace ft
             typedef typename allocator_type::difference_type difference_type;
             typedef typename allocator_type::size_type       size_type;
 
+        private:
             allocator_type _alloc;
             pointer _data;
             size_type v_capacity;
             size_type v_size;
-        
+            void freax()
+            {
+                clear();
+                _alloc.deallocate(_data, v_capacity);
+                _data = NULL;
+                v_capacity = 0;
+            }
+
+        public:
         /* 
         !┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
         !│                       MEMBER FUNCTIONS:                                                                            │
@@ -60,6 +69,8 @@ namespace ft
                 _data = _alloc.allocate(n);
                 for (size_t i = 0; i < n; ++i)
                    _alloc.construct(_data + i, val);
+                v_capacity = n;
+                v_size = n;
             }
             template <class InputIterator>
             vector (InputIterator first, InputIterator last,
@@ -67,17 +78,7 @@ namespace ft
                     typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
                     :  _alloc(alloc), _data(NULL), v_capacity(0), v_size(0)
             {
-                size_t d = 0;
-                size_t i = 0;
-                for (InputIterator it = first; it != last; ++it )
-                    d++;
-                _data = _alloc.allocate(d);
-                for (InputIterator in_iter = first; in_iter != last; ++ in_iter) {
-                    _alloc.construct(_data + i, *(in_iter));
-                    ++i;
-                }
-                v_capacity = d;
-                v_size = d;
+                assign(first, last);
             }
             vector (const vector& x)
             {
@@ -93,16 +94,32 @@ namespace ft
             }
 
             ~vector(){
-                if (capacity() > 0) {
+                if (size() > 0)
                     clear();
+                if (capacity() > 0)
                     _alloc.deallocate(_data, v_capacity);
-                }
             }
 
             vector& operator= (const vector& x)
             {
                 if (this == &x)
                     return *this;
+//                clear();
+//                _alloc.deallocate(_data, v_capacity);
+//                _data = NULL;
+//                v_capacity = 0;
+                freax();
+                _alloc = x.get_allocator();
+//                std::cout << "*****" <<  x.capacity()<< ' ' <<  x.size() << std::endl;
+                _data = _alloc.allocate(x.capacity());
+                for (size_t i = 0; i < x.size(); ++i)
+                    _alloc.construct(_data + i, x._data[i]);
+                v_capacity = x.v_capacity;
+                v_size = x.v_size;
+                return *this;
+                if (this == &x)
+                    return *this;
+                _alloc = x.get_allocator();
                 if (x.size() > 0)
                 {
                     if (size() > 0) {
@@ -113,7 +130,6 @@ namespace ft
                     for (size_t i = 0; i < x.size(); ++i)
                         _alloc.construct(_data + i, x._data[i]);
                 }
-                _alloc = x._alloc;
                 v_capacity = x.v_capacity;
                 v_size = x.v_size;
                 return *this;
@@ -159,7 +175,7 @@ namespace ft
                 {
                     size_type i = n;
                     while (i < v_size) {
-                        _alloc.destroy(_data + ( i));
+                        _alloc.destroy(_data + i);
                         i++;
                     }
                     v_size = n;
@@ -174,8 +190,9 @@ namespace ft
                     }
                     size_type i = v_size;
                     while (i < n) {
-                        _alloc.destroy(_data + ( i));
-                        _alloc.construct(_data + ( i), val);
+                        _data[i] = val;
+//                        _alloc.destroy(_data + ( i));
+//                        _alloc.construct(_data + ( i), val);
                         i++;
                     }
                     v_size = n;
@@ -197,7 +214,7 @@ namespace ft
                     if (!empty())
                     {
                         pointer tmp;
-                        tmp = _alloc.allocate( n);
+                        tmp = _alloc.allocate(n);
                         for (size_t i = 0; i < v_capacity; ++i) {
                             _alloc.construct(tmp + i, *(_data + i));
                             _alloc.destroy(_data + i);
@@ -389,7 +406,6 @@ namespace ft
                             v_capacity = v_size + d;
                         }
                     }
-//                        tmp = _alloc.allocate(v_size + d);
                     else
                         tmp = _alloc.allocate(v_capacity);
                     while (i < v_size) {
@@ -456,7 +472,7 @@ namespace ft
 
             void clear()
             {
-                if (!empty())
+                if (v_size > 0)
                 {
                     for (size_t i = 0; i < v_size; ++i)
                         _alloc.destroy(_data + i);
@@ -498,10 +514,10 @@ namespace ft
 
 }
 
-//namespace std
-//{
-//    template<class T, class Alloc>
-//    void swap(ft::vector<T, Alloc> &v1, ft::vector<T, Alloc> &v2) { v1.swap(v2); }
-//}
+namespace std
+{
+    template<class T, class Alloc>
+    void swap(ft::vector<T, Alloc> &v1, ft::vector<T, Alloc> &v2) { v1.swap(v2); }
+}
 
 #endif
