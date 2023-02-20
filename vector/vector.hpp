@@ -304,6 +304,7 @@ namespace ft
 //                    if (position < begin() || position >= end())
 //                        throw std::out_of_range("Invalid iterator position");
 //                    }
+//                    std::cout << "(*1)" << std::endl;
                     size_t index = position - begin();
 
                     if (v_size == v_capacity)
@@ -327,6 +328,7 @@ namespace ft
             }
             void insert (iterator position, size_type n, const value_type& val)
             {
+//                std::cout << "(*2)" << std::endl;
                 size_t index = position - begin();
 
                 if (v_size + n > v_capacity) {
@@ -349,40 +351,66 @@ namespace ft
             void insert (iterator position, InputIterator first, InputIterator last,
                          typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
             {
+                vector backup(*this);
+
+                try {
+//                    vector<typename iterator_traits<InputIterator>::value_type> tmp(first, last);
+                    size_type n = std::distance(first, last);
+                    if (n == 0)
+                        return;
+
+                    size_type index = std::distance(begin(), position);
+                    if (v_size + n > v_capacity)
+                        reserve(v_capacity * 2 > v_size + n ? v_capacity * 2 : v_size + n);
+
+                    for (size_type i = v_size; i > index; --i) {
+                        _alloc.construct(_data + i + n - 1, _data[i - 1]);
+                        _alloc.destroy(_data + i - 1);
+                    }
+                    for (size_type i = 0; i < n; ++i) {
+                        _alloc.construct(_data + index + i, *first);
+                        first++;
+                    }
+                    v_size+=n;
+                } catch (...) {
+                    swap(backup);
+                    throw;
+                }
+
+
 //                vector back(*this);
 //                try{
 //                    if (position < begin() || position >= end()) {
 //                        throw std::out_of_range("Invalid iterator position");
 //                    }
-                if (std::is_same<typename std::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
-                {
-                    for (; first != last; ++first) {
-                        insert(position, *first);
-                        ++position;
-                    }
-                    return ;
-                }
-                    size_type n = std::distance(first, last);
-                    if (v_size + n > v_capacity) {
-                        reserve(v_size + n);
-                    }
-
-                    size_type index = 0;
-                    if (!empty())
-                        index = position - begin();
-
-                    for (size_t i = v_size + n - 1; i > index + n - 1; --i) {
-                        _alloc.construct(_data + i, _data[i - n]);
-                        if (_data + i - n != NULL)
-                        _alloc.destroy(_data + i - n);
-                    }
-
-                    for (size_type i = 0; i < n; ++i) {
-                        _alloc.construct(_data + index + i, *(first++));
-                    }
-
-                    v_size += n;
-//                    std::cout << v_size << ' '   <<  v_capacity << ' ' << n << std::endl;
+//                if (std::is_same<typename std::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
+//                {
+//                    for (; first != last; ++first) {
+//                        insert(position, *first);
+//                        ++position;
+//                    }
+//                    return ;
+//                }
+//                    size_type n = std::distance(first, last);
+//                    if (v_size + n > v_capacity) {
+//                        reserve(v_size + n);
+//                    }
+//
+//                    size_type index = 0;
+//                    if (!empty())
+//                        index = position - begin();
+//
+//                    for (size_t i = v_size + n - 1; i > index + n - 1; --i) {
+//                        _alloc.construct(_data + i, _data[i - n]);
+//                            _alloc.destroy(_data + i - n);
+//                    }
+//
+//
+//                for (size_type i = 0; i < n; ++i) {
+//                        _alloc.construct(_data + index + i, *(first++));
+//                    }
+//
+//                    v_size += n;;
 //                }catch(...){
 //                    swap(back);
 //                    throw;
