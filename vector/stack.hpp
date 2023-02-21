@@ -59,7 +59,7 @@ namespace ft
             template <class T1, class C>
             friend bool operator>  (const stack<T1,C>& a, const stack<T1,C>& b) { return  b.c < a.c; }
             template <class T1, class C>
-            friend bool operator>= (const stack<T1,C>& a, const stack<T1,C>& b) { return (!a.c < b.c); }
+            friend bool operator>= (const stack<T1,C>& a, const stack<T1,C>& b) { return !(a.c < b.c); }
             };
 
 }
