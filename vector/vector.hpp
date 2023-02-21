@@ -45,15 +45,6 @@ namespace ft
             pointer _data;
             size_type v_capacity;
             size_type v_size;
-            void freax()
-            {
-                if (v_capacity > 0 && _data){
-                    _alloc.deallocate(_data, v_capacity);
-                    _data = NULL;
-                    v_capacity = 0;
-                    v_size = 0;
-                }
-            }
 
         public:
         /* 
@@ -67,7 +58,6 @@ namespace ft
                                 const allocator_type& alloc = allocator_type())
                                 : _alloc(alloc), _data(NULL), v_capacity(0), v_size(0)
             {
-//                freax();
                 if (n > 0){
                     _data = _alloc.allocate(n);
                     for (size_t i = 0; i < n; ++i)
@@ -165,7 +155,6 @@ namespace ft
                 {
                     size_type i = n;
                     while (i < v_size) {
-//                        if (_data + i != NULL)
                             _alloc.destroy(_data + i);
                         i++;
                     }
@@ -247,7 +236,7 @@ namespace ft
             void assign (InputIterator first, InputIterator last,
                          typename ft::enable_if<ft::is_integral<InputIterator>::value == false, InputIterator>::type = InputIterator())
             {
-                if (std::is_same<typename std::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
+                if (std::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
                 {
                     clear();
                     for (InputIterator it = first; it != last; ++it)
@@ -299,13 +288,15 @@ namespace ft
 
             iterator insert (iterator position, const value_type& val)
             {
-                vector back(*this);
+              vector back(*this);
                 try{
+//
+                    size_type index = std::distance(begin(), position);
 
-                    size_t index = position - begin();
-
-                    if (v_size == v_capacity)
-                        reserve(v_size * 2);
+                    if (v_capacity == 0)
+                        reserve(1);
+                    else if (v_size == v_capacity)
+                        reserve(v_capacity * 2);
 
                     for (size_t i = v_size; i > index; --i) {
                         _alloc.construct(_data + i, _data[i - 1]);
@@ -325,27 +316,31 @@ namespace ft
             }
             void insert (iterator position, size_type n, const value_type& val)
             {
-//                size_t index = position - begin();
-                if (n == 0)
-                    return ;
-                size_type index = std::distance(begin(), position);
+                vector back(*this);
+                try {
+                    if (n == 0)
+                        return;
 
-//                if (v_size + n > v_capacity) {
-//                    reserve(v_size + n);
-//                }
-                if (v_size + n > v_capacity)
-                    reserve(v_capacity * 2 > v_size + n ? v_capacity * 2 : v_size + n);
+                    size_type index = std::distance(begin(), position);
 
-                for (size_t i = v_size + n - 1; i > index + n - 1; --i) {
-                    _alloc.construct(_data + i, _data[i - n]);
-                    _alloc.destroy(_data + i - n);
+                    if (v_size + n > v_capacity)
+                        reserve(v_capacity * 2 > v_size + n ? v_capacity * 2 : v_size + n);
+
+                    for (size_t i = v_size + n - 1; i > index + n - 1; --i) {
+                        _alloc.construct(_data + i, _data[i - n]);
+                        _alloc.destroy(_data + i - n);
+                    }
+
+                    for (size_t i = 0; i < n; ++i) {
+                        _alloc.construct(_data + index + i, val);
+                    }
+                    v_size += n;
                 }
-
-                for (size_t i = 0; i < n; ++i) {
-                    _alloc.construct(_data + index + i, val);
+                catch(...)
+                {
+                    swap(back);
+                    throw;
                 }
-
-                v_size += n;
             }
 
             template <class InputIterator>
@@ -467,6 +462,9 @@ namespace ft
     void swap(vector<T, Alloc> &v1,vector<T, Alloc> &v2) { v1.swap(v2); }
 }
 
-
+//namespace std {
+//    template<class T, class Alloc>
+//    void swap(ft::vector<T, Alloc> &v1, ft::vector<T, Alloc> &v2) { v1.swap(v2); }
+//}
 
 #endif
