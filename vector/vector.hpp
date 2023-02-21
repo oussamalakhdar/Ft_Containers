@@ -299,16 +299,13 @@ namespace ft
 
             iterator insert (iterator position, const value_type& val)
             {
-//                vector back(*this);
-//                try{
-//                    if (position < begin() || position >= end())
-//                        throw std::out_of_range("Invalid iterator position");
-//                    }
-//                    std::cout << "(*1)" << std::endl;
+                vector back(*this);
+                try{
+
                     size_t index = position - begin();
 
                     if (v_size == v_capacity)
-                        reserve(v_size + 1);
+                        reserve(v_size * 2);
 
                     for (size_t i = v_size; i > index; --i) {
                         _alloc.construct(_data + i, _data[i - 1]);
@@ -319,21 +316,25 @@ namespace ft
                     ++v_size;
 
                     return begin() + index;
-//                }
-//                catch(const std::out_of_range& e)
-//                {
-//                    swap(back);
-//                    throw e;
-//                }
+                }
+                catch(...)
+                {
+                    swap(back);
+                    throw;
+                }
             }
             void insert (iterator position, size_type n, const value_type& val)
             {
-//                std::cout << "(*2)" << std::endl;
-                size_t index = position - begin();
+//                size_t index = position - begin();
+                if (n == 0)
+                    return ;
+                size_type index = std::distance(begin(), position);
 
-                if (v_size + n > v_capacity) {
-                    reserve(v_size + n);
-                }
+//                if (v_size + n > v_capacity) {
+//                    reserve(v_size + n);
+//                }
+                if (v_size + n > v_capacity)
+                    reserve(v_capacity * 2 > v_size + n ? v_capacity * 2 : v_size + n);
 
                 for (size_t i = v_size + n - 1; i > index + n - 1; --i) {
                     _alloc.construct(_data + i, _data[i - n]);
@@ -354,12 +355,12 @@ namespace ft
                 vector backup(*this);
 
                 try {
-//                    vector<typename iterator_traits<InputIterator>::value_type> tmp(first, last);
                     size_type n = std::distance(first, last);
                     if (n == 0)
                         return;
 
                     size_type index = std::distance(begin(), position);
+
                     if (v_size + n > v_capacity)
                         reserve(v_capacity * 2 > v_size + n ? v_capacity * 2 : v_size + n);
 
@@ -376,45 +377,6 @@ namespace ft
                     swap(backup);
                     throw;
                 }
-
-
-//                vector back(*this);
-//                try{
-//                    if (position < begin() || position >= end()) {
-//                        throw std::out_of_range("Invalid iterator position");
-//                    }
-//                if (std::is_same<typename std::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
-//                {
-//                    for (; first != last; ++first) {
-//                        insert(position, *first);
-//                        ++position;
-//                    }
-//                    return ;
-//                }
-//                    size_type n = std::distance(first, last);
-//                    if (v_size + n > v_capacity) {
-//                        reserve(v_size + n);
-//                    }
-//
-//                    size_type index = 0;
-//                    if (!empty())
-//                        index = position - begin();
-//
-//                    for (size_t i = v_size + n - 1; i > index + n - 1; --i) {
-//                        _alloc.construct(_data + i, _data[i - n]);
-//                            _alloc.destroy(_data + i - n);
-//                    }
-//
-//
-//                for (size_type i = 0; i < n; ++i) {
-//                        _alloc.construct(_data + index + i, *(first++));
-//                    }
-//
-//                    v_size += n;;
-//                }catch(...){
-//                    swap(back);
-//                    throw;
-//                }
             }
 
             iterator erase (iterator position)
