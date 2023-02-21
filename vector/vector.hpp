@@ -90,8 +90,11 @@ namespace ft
             ~vector(){
                 if (size() > 0)
                     clear();
-                if (capacity() > 0)
+                if (capacity() > 0) {
                     _alloc.deallocate(_data, v_capacity);
+                    v_capacity = 0;
+                    _data = NULL;
+                }
             }
 
             vector& operator= (const vector& x)
@@ -290,7 +293,6 @@ namespace ft
             {
               vector back(*this);
                 try{
-//
                     size_type index = std::distance(begin(), position);
 
                     if (v_capacity == 0)
@@ -350,12 +352,12 @@ namespace ft
                 vector backup(*this);
 
                 try {
-                    size_type n = std::distance(first, last);
+                    vector<typename iterator_traits<InputIterator>::value_type> tmp(first, last);
+                    size_type n = tmp.size();
                     if (n == 0)
                         return;
 
                     size_type index = std::distance(begin(), position);
-
                     if (v_size + n > v_capacity)
                         reserve(v_capacity * 2 > v_size + n ? v_capacity * 2 : v_size + n);
 
@@ -364,10 +366,9 @@ namespace ft
                         _alloc.destroy(_data + i - 1);
                     }
                     for (size_type i = 0; i < n; ++i) {
-                        _alloc.construct(_data + index + i, *first);
-                        first++;
+                        _alloc.construct(_data + index + i, tmp[i]);
+                        v_size++;
                     }
-                    v_size+=n;
                 } catch (...) {
                     swap(backup);
                     throw;
